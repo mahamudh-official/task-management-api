@@ -20,3 +20,6 @@ class UserRepository:
 
     def get_by_phone_number(self, phone_number: str) -> User | None:
         return self.db.query(User).filter(User.phone_number == phone_number).first()
+
+    def get_by_id(self, user_id: int) -> User | None:
+        return self.db.query(User).filter(User.id == user_id).first()

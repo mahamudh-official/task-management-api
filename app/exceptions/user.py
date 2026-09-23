@@ -11,3 +11,11 @@ class UserNotFoundException(UserException):
 class UserAlreadyExistsException(UserException):
     def __init__(self, field: str, value: str):
         super().__init__(message=f"User with {field} '{value}' already exists", status_code=409)
+
+class AuthenticationException(UserException):
+    def __init__(self):
+        super().__init__(message="Credentials are invalid", status_code=401)
+
+class InActiveUserException(UserException):
+    def __init__(self):
+        super().__init__(message="User is inactive", status_code=403)

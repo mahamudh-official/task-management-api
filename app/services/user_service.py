@@ -1,11 +1,15 @@
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.core.security import hash_password
-from app.exceptions.user import UserAlreadyExistsException
+from app.core.security import create_access_token, hash_password, verify_password
+from app.exceptions.user import (
+    AuthenticationException,
+    InActiveUserException,
+    UserAlreadyExistsException,
+)
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
-from app.schemas.user import UserCreate
+from app.schemas.user import UserCreate, UserLogin
 
 
 class UserService:
@@ -43,3 +47,22 @@ class UserService:
         except SQLAlchemyError:
             self.db.rollback()
             raise 
+
+    def login(self, user: UserLogin):
+        existing_user = self.user_repository.get_by_email(user.email)
+
+        if existing_user is None:
+            raise AuthenticationException()
+
+        if not existing_user.is_active:
+            raise InActiveUserException()
+
+        if not verify_password(user.password, existing_user.password_hash):
+            raise AuthenticationException()
+
+        token = create_access_token({"sub": str(existing_user.id)})
+
+        return {
+            "access_token": token,
+            "token_type": "bearer"
+        }
