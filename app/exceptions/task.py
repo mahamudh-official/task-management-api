@@ -21,3 +21,10 @@ class TaskForbiddenException(TaskException):
             message="You do not have permission to access this resource",
             status_code=403,
         )
+
+class InvalidTaskPageException(TaskException):
+    def __init__(self, page: int):
+        super().__init__(
+            message=f"Invalid page number '{page}'",
+            status_code=404,
+        )

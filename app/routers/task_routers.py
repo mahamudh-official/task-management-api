@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from typing import Literal
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.dependencies.auth import get_current_user
 from app.models.user import User
-from app.schemas.task import TaskCreate, TaskResponse, TaskUpdate
+from app.schemas.task import TaskCreate, TaskListResponse, TaskResponse, TaskUpdate
 from app.services.task_service import TaskService
 
 router = APIRouter(
@@ -21,13 +22,18 @@ def create_task(
     task_service = TaskService(db)
     return task_service.create(task, current_user.id)
 
-@router.get("/", response_model=list[TaskResponse])
+@router.get("/", response_model=TaskListResponse)
 def get_tasks(
+    page: int = Query(default=1, ge=1),
+    limit: int = Query(default=10, ge=1, le=100),
+    sort_by: Literal["created_at", "due_date"] = "created_at",
+    order: Literal["asc", "desc"] = "desc",
+    is_completed: bool | None = None,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     task_service = TaskService(db)
-    return task_service.get_all_tasks(current_user.id)
+    return task_service.get_all_tasks(current_user.id, page, limit, sort_by, order, is_completed)
 
 @router.get("/{task_id}", response_model=TaskResponse)
 def get_task(

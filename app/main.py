@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 
 from app.core.config import settings
 from app.exception_handlers.task import task_exception_handler
@@ -23,3 +23,6 @@ app.include_router(task_router)
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+
+

@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expiration_minutes: int
+    refresh_token_expiration_days: int
 
     model_config = SettingsConfigDict(
         env_file=".env",
