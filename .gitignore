@@ -5,3 +5,9 @@ __pycache__/
 .pytest_cache/
 .coverage
 htmlcov/
+.env.*
+!.env.example
+*.pyc
+.mypy_cache/
+.vscode/
+.idea/

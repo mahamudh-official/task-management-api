@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Index, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.models.base import Base
@@ -8,6 +8,10 @@ from app.models.base import Base
 
 class Task(Base):
     __tablename__ = "tasks"
+    __table_args__ = (
+                        Index("ix_tasks_user_created_at", "user_id", "created_at"),
+                        Index("ix_tasks_user_due_date", "user_id", "due_date"),
+                    )
 
     id: Mapped[int] = mapped_column(primary_key=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)

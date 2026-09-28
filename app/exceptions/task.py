@@ -26,5 +26,5 @@ class InvalidTaskPageException(TaskException):
     def __init__(self, page: int):
         super().__init__(
             message=f"Invalid page number '{page}'",
-            status_code=404,
+            status_code=400,
         )
